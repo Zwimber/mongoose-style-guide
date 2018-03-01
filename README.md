@@ -16,6 +16,7 @@ according to your preferences.
 ## Table of contents
 
 ### Object styling
+* [Basics]('#basics')
 * [CamelCase versus object]('#camelcase-versus-object')
 * [Populateable guide]('#populate')
 
@@ -26,6 +27,37 @@ according to your preferences.
 * [Suggestion for folder structure](#folder-structure)
 
 ## Object styling
+### Basics
+
+Basic structure of an exported schema.
+
+```js
+let Schema = require('mongoose').Schema
+let SchemaObjectId 	= Schema.Types.ObjectId;
+
+let SchemaMain = new Schema({
+  ...schema content...
+})
+
+module.exports = SchemaMain;
+```
+
+Your schema's are summarised in another file. An suggestion for folder structure can be found later on. 
+
+```js
+let model = require('mongoose').model
+
+let root = '<holds a reference to the root of project, alternatively describe path>'
+let SchemaUser = require(root + '/models/user')
+
+module.exports = {
+	User     : model('user', SchemaUser),
+}
+```
+User - capital since it is an class
+user - lowecase, this will be the collection name in MongoDB, some versions will pluralize this
+
+
 ### CamelCase versus object
 
 Content will be added.
