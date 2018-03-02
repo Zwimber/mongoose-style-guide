@@ -17,10 +17,10 @@ according to your preferences.
 ## Table of contents
 
 ### Object styling
-* [Basics]('#basics')
-* [CamelCase versus object]('#camelcase-versus-object')
-* [Populateable guide]('#populate')
-* [Storing history]('#history')
+* [Basics](#basics)
+* [CamelCase versus object](#camelcase-versus-object)
+* [Populateable guide](#populate)
+* [Storing history](#history)
 
 ### Naming Conventions
 * To be added
@@ -31,16 +31,34 @@ according to your preferences.
 ## Object styling
 ### Basics
 
-Basic structure of an exported schema.
+Basic structure of an exported schema. Avoid specifying more than one schema per file.
 
 ```js
+// (0) Require
 let Schema = require('mongoose').Schema
 let SchemaObjectId 	= Schema.Types.ObjectId;
 
+// (1) Define object
 let SchemaMain = new Schema({
-  // Schema
+	// Schema
 })
 
+// (2) Pre/post hooks
+SchemaMain.pre('save', function(next) {
+	next()
+})
+
+// (3) Methods
+SchemaMain.methods.logThis = function() {
+	console.log('This is a reference to the instance', this)
+}
+
+// (4) Statics
+SchemaMain.statics.logModel = function() {
+	console.log('This is a reference to the model', this)
+}
+
+// (5) Export
 module.exports = SchemaMain;
 ```
 
@@ -54,8 +72,9 @@ module.exports = {
 	User: model('user', SchemaUser),
 }
 ```
-**User** - capital since it is an class
-**user** - lowecase, this will be the collection name in MongoDB, some mongoose versions will pluralize this
+
+**User** is a class so it is capitalised
+**user** is a collection name in MongoDB so it is lowercase (some mongoose versions will pluralize this)
 
 ### Property naming
 
@@ -93,11 +112,11 @@ let user = {
 
 // Bad boy example
 let user = {
-	name_first: 'Tim',						// (1) Not using camelCase
-	middleName: null,						// (2) Wrong order of elements 
-	userNameLast: 'L',						// (3) Restated name of model 
-	e: 'user@example.com',					// (4) Not descriptive
-	options: {},							// (5) Using reserved property names
+	name_first: 'Tim',					// (1) Not using camelCase
+	middleName: null,					// (2) Wrong order of elements 
+	userNameLast: 'L',					// (3) Restated name of model 
+	e: 'user@example.com',				// (4) Not descriptive
+	options: {},						// (5) Using reserved property names
 	
 	picture_profile: '/url/to/profile.jpg',	// (1) Not using camelCase
 	banner_picture: '/url/to/profile.jpg',	// (2) Wrong order of elements
