@@ -8,35 +8,75 @@ personal opinions.
 The style-guide style is largely based on [this style-guide](https://github.com/felixge/node-style-guide) and assumes knowledge of it.
 
 This guide was created by [Woodland](https://woodl.nl/) and is
-licensed under the [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/)
+licensed under the [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
 license. You are encouraged to fork this repository and make adjustments
 according to your preferences.
 
-![Creative Commons License](http://i.creativecommons.org/l/by-sa/3.0/88x31.png)
+![Creative Commons License](https://i.creativecommons.org/l/by-sa/3.0/88x31.png)
 
 ## Table of contents
 
-### Object styling
-* [Basics](#basics)
+### Mongoose Schema
+
+We discuss the basics of an mongoose schema, discuss some of the standards set by MongoDB and which one of these are worth following. 
+
+* [Standards](#object-standards)
+* [Folder structure](#folder-structure)
+* [Basic schema structure](#basic-schema-structure)
+
 * [CamelCase versus object](#camelcase-versus-object)
 * [Populateable guide](#populate)
-* [Storing history](#history)
 
 ### Naming Conventions
-* To be added
+To be added, we will discuss some often repeating patterns and how to name these
+* [Storing history](#history)
+* [Storing history](#history)
 
-### Folder structuring
-* [Suggestion for folder structure](#folder-structure)
+### Folder structure
+* [Server](#folder-structure)
 
 ## Object styling
-### Basics
 
-Basic structure of an exported schema. Avoid specifying more than one schema per file.
+
+### Standards
+
+
+* Use American spelling
+
+
+### Folder structure
+
+Make sure to have a seperate folder for most *Mongoose* or *MongoDB* related.
+
+1. Root file where you combine all models and export them ([example](#schema-grouping))
+2. Group files related to a model together, use singular form
+3. Always use index.js for the root schema ([example](#basics))
+4. Create a shared folder which contains reusable schemas
+
+```bash
+|-- models
+    |-- index.js         # (1)
+    |-- user             # (2)
+        |-- index.js     # (3) 
+        |-- email.js
+    |-- company
+    |-- product
+    |-- shared           # (4)
+        |-- count.js
+        |-- name.js
+        |-- amount.js
+        |-- duration.js
+
+```
+
+### Basic schema structure
+
+Basic structure of an exported schema. Avoid specifying more than one schema per file. 
 
 ```js
-// (0) Require
+// (0) Requires
 let Schema = require('mongoose').Schema
-let SchemaObjectId     = Schema.Types.ObjectId;
+let SchemaObjectId = Schema.Types.ObjectId;
 
 // (1) Define object
 let SchemaMain = new Schema({
@@ -62,19 +102,63 @@ SchemaMain.statics.logModel = function() {
 module.exports = SchemaMain;
 ```
 
-Your schema's are summarised in another file. An suggestion for folder structure can be found later on. 
+### Schema grouping
+
+Your schemas are grouped in another file. You can require these models in another folder but since in a lot of projects communication with the database is so commonplace that we suggest storing them in a global variable. 
 
 ```js 
 let model = require('mongoose').model
-let SchemaUser = require(root + '/path/to/models/user')
+let SchemaUser = require(root + '/path/to/models/user/')
+let SchemaProduct = require(root + '/path/to/models/product/')
+let SchemaCompany = require(root + '/path/to/models/company/')
 
 module.exports = {
     User: model('user', SchemaUser),
+    Company: model('company', SchemaCompany),
+    Product: model('product', SchemaProduct),
 }
 ```
 
-**User** is a class so it is capitalised
-**user** is a collection name in MongoDB so it is lowercase (some mongoose versions will pluralize this)
+**User** is a class so it is UpperCamelCased
+
+**user** is a collection name in MongoDB so it is lowercase and following conventions it should be plural (mongoose even has a function making these names plural for you). We disagree with the 
+
+We disagree with pluralisation in our folder structure or our model/folder names since it causes confusing and longer names.
+
+### Why pluralisation is confusing
+
+1. The English language has [rather confusing plurals](https://en.wikipedia.org/wiki/English_plurals) 
+2. Plural (often) makes the word longer
+
+| Singular          | Plural            | Character gain  |   Comment               |
+|:------------------|:------------------| ---------------:|-------------------------|
+| User              | Users             | +25%            |                         |
+| Life              | Lives             | +25%            |                         |
+| Dish              | Dishes            | +50%            |                         |
+| Mouse             | Mice              | -20%            | Shorter!                |
+| Radius            | Radii             | -17%            | Shorter!                |
+| Staff             | Staffs            | +20%            |                         |
+| Staff             | Staves            | +20%            | Alternative plural      |
+| Child             | Children          | 60%             |                         |
+| Bison             | Bison             | +0%             |                         |
+| Company           | Companies         | +29%            |                         |
+| Product           | Products          | +14%            |                         |
+
+
+3. Object creation is slightly less readable in plural form
+
+```js
+let model = require(root + '/path/to/models/')
+
+// Singular - good boy example
+// It is easier to think of a single model of a user which you reuse
+let user = new model.User()
+let users = model.User.find()
+
+// Plural - bad boy example
+let user = new model.Users()
+let users = model.Users.find()
+```
 
 ### Property naming
 
