@@ -16,27 +16,31 @@ according to your preferences.
 
 ## Table of contents
 
-### Mongoose Schema
+### Mongoose basics
 
-We discuss the basics of an mongoose schema, discuss some of the standards set by MongoDB and which one of these are worth following. 
-
-* [Standards](#object-standards)
+* [Standards](#standards)
 * [Folder structure](#folder-structure)
-* [Basic schema structure](#basic-schema-structure)
+* [Schema structure](#schema-structure)
+* [Schema grouping](#schema-grouping)
+* [Motivation for singular form](#motivation-for-singular-form)
 
-* [CamelCase versus object](#camelcase-versus-object)
+### Mongoose flat versus structured
+
+* [Tradeof: Flat versus structured](#camelcase-versus-object)
+
+### Mongoose population
+
 * [Populateable guide](#populate)
 
-### Naming Conventions
+### Mongoose stable patterns
 To be added, we will discuss some often repeating patterns and how to name these
 * [Storing history](#history)
 * [Storing history](#history)
 
-### Folder structure
-* [Server](#folder-structure)
+* Always store _id when storing history, this way you can revert to a certain stage. 
 
-## Object styling
 
+## Mongoose basics
 
 ### Standards
 
@@ -69,7 +73,7 @@ Make sure to have a seperate folder for most *Mongoose* or *MongoDB* related.
 
 ```
 
-### Basic schema structure
+### Schema structure
 
 Basic structure of an exported schema. Avoid specifying more than one schema per file. 
 
@@ -106,8 +110,11 @@ module.exports = SchemaMain;
 
 Your schemas are grouped in another file. You can require these models in another folder but since in a lot of projects communication with the database is so commonplace that we suggest storing them in a global variable. 
 
+As you can see in the following example, we leave the Schema, folder and model property names in singular form a motivation is found in the next chapter.
+
 ```js 
 let model = require('mongoose').model
+
 let SchemaUser = require(root + '/path/to/models/user/')
 let SchemaProduct = require(root + '/path/to/models/product/')
 let SchemaCompany = require(root + '/path/to/models/company/')
@@ -121,12 +128,17 @@ module.exports = {
 
 **User** is a class so it is UpperCamelCased
 
-**user** is a collection name in MongoDB so it is lowercase and following conventions it should be plural (mongoose even has a function making these names plural for you). We disagree with the 
+**user** is a collection name in MongoDB which by convention are lowercase
 
-We disagree with pluralisation in our folder structure or our model/folder names since it causes confusing and longer names.
+### Motivation for singular form
 
-### Why pluralisation is confusing
+I am not saying you should ban plural from your programming alltogether, there are 
 
+0. It does not give extra insight. 
+
+```js
+<Here will an extremely clear example showing that it does not give extra insight>
+```
 1. The English language has [rather confusing plurals](https://en.wikipedia.org/wiki/English_plurals) 
 2. Plural (often) makes the word longer
 
@@ -143,7 +155,7 @@ We disagree with pluralisation in our folder structure or our model/folder names
 | Bison             | Bison             | +0%             |                         |
 | Company           | Companies         | +29%            |                         |
 | Product           | Products          | +14%            |                         |
-
+| Statistics        | Statistics        | +0%             | Plural singular         |
 
 3. Object creation is slightly less readable in plural form
 
@@ -151,13 +163,12 @@ We disagree with pluralisation in our folder structure or our model/folder names
 let model = require(root + '/path/to/models/')
 
 // Singular - good boy example
-// It is easier to think of a single model of a user which you reuse
 let user = new model.User()
-let users = model.User.find()
+let userQuery = model.User.find()
 
 // Plural - bad boy example
 let user = new model.Users()
-let users = model.Users.find()
+let userQuery = model.Users.find()
 ```
 
 ### Property naming
@@ -176,7 +187,7 @@ TLDR; tips when naming properties:
 2. Order camelCase parts from most to least important 
  (*do:* nameFirst, *don't*: firstName)
 3. Don't restate the current model name
-4. Be descriptive even though MongoDB favours short property names
+4. Be descriptive, even though MongoDB favours short property names
 5. Watch for reserved words
 
 *Note: After this example we suggest an alternative way for storing username*
@@ -207,6 +218,7 @@ let user = {
     userActive: true,                       // (3) Restated name of model
 }
 ```
+
 **Exception 0 - When properties need numbers**
 
 Sometimes 
@@ -297,7 +309,7 @@ let user = {
     }
 }
 ```
-*Note: in this example it is very unlikely you would not want to use any of the intermediate properties (e.g. we might a place to store the picture at age.verification.picture.value)*
+*Note: in this example it is very unlikely you would not want to use any of the intermediate properties (e.g. we might a place to store the picture path `age.verification.picture.path`)*
 
 **Exception 1 - Intermediate property makes no sense**
 
@@ -306,18 +318,20 @@ In cases where you want to be very descriptive and are not interested in using t
 ```js
 // Before 
 let user = {
-    roomLivingTelevisionCount: 1 
+    livingroomTelevisionCount: 1,
+    twoPersonSofaCount: 1,
 }
 
 // After de-camelCase-ization
 let user = {
-    room: {
-        living: {
+    living: {
+        room: {
             television: {
                 count: 1
             }
         }
-    }
+    },
+    two: { person: { Sofa: { count: 1 } } }
 }
 ```
 
@@ -382,8 +396,8 @@ let notAllowedWithAlternatives = {
     '_events': [],
     'db': [],
     'get': ['receive'],
-    'set': ['put'],
-    'init': [],
+    'set': ['put', 'made'],
+    'init': ['create'],
     'isNew': [],
     'errors': [],
     'schema': [],
@@ -403,9 +417,132 @@ kind, fields, etag, id, lang, updated, deleted, currentItemCount, itemsPerPage, 
 ```
 
 
+### Flat vs structured
 
+```js
+// Please add me
+```
 
 ### Populateable guide
+
+Mongoose offers a very powerful function namely `populate`. It enables you to easily find linked models. Consider an typical N:N example with `users` that can do `transactions`. We'd easily want to do the following:
+
+1. Add a transaction
+2. Find all transactions that belong to a user
+3. Find all users belonging to a transaction
+
+Therefore a user and a transaction might have the following structure
+
+```js
+// User
+let user = {
+	_id: ObjectId,
+	name: String,
+	transaction: [{ 
+		type: ObjectId, 
+		ref: 'transaction' 
+	}]
+}
+
+let transaction = {
+	_id: ObjectId,
+	amount: Number,
+	user: [{ 
+		type: ObjectId, 
+		ref: 'user' 
+	}]
+}
+```
+
+This would enable us to do the following:
+
+```js
+let find = {}
+let populate = { path: 'transaction' }
+let query = Model.User.find(find).populate(populate)
+
+// Result is a single object which combines transactions and users:
+{
+	_id: 0,
+	name: 'Bob',
+	transaction: [{
+		_id: 1000,
+		amount: 5,
+		users: [0, 1]
+	}, {
+		_id: 1001
+		amount: 6,
+		users: [0, 3]
+	}]
+}
+```
+
+Without the use of population we need to do the following steps for the same result:
+
+1. Find users
+2. Make a list of all their transaction ids
+3. Find all those transactions
+4. Combine the user object with the found transactions
+
+Population does come with a downside: there is uncertainty in the object structure. In situations where you do not populate the object structure is different. People also might forget that it is in fact a populated field:
+
+```js
+// Result when not populated
+{
+	_id: 0,
+	name: 'Bob',
+	transaction: [1000,1001] // List of transaction _id's
+}
+
+// Result when populated
+{
+	_id: 10,
+	name 'Bob',
+	transaction: [{ _id: 1000, amount: 5 }, { _id: 1001, amount: 6 }]
+}
+```
+This is a clear source of errors, if at a certain time we decide that a specific route will have the populated version all old uses of that route that need the transaction _id will break.
+
+We therefore suggest the following pattern whenever you make references:
+
+```js
+// V0
+let SchemaTransactionRef = new Schema({
+	item: { type: ObjectId, ref: 'transaction' },
+	itemId: { type: ObjectId },
+})
+
+// V1
+let SchemaTransactionRef = new Schema({
+	transaction: { type: ObjectId, ref: 'transaction' },
+	transactionId: { type: ObjectId },
+})
+
+// User
+let SchemaUser = new Schema({
+	_id: ObjectId,
+	name: String,
+	transaction: [SchemaTransactionRef]
+})
+```
+
+This way we can safely use the always present `transaction[0].itemId` without the risk of it being populated.
+
+
+// Without population we have many more steps:
+
+let find = {}
+let query = Model.User.find(find)
+query.then(docs => {
+
+	let ids = docs.map(d => d._id)
+
+	let transactionFind = { _id: ids }
+	let transactionQuery = Model.User.find(transactionFind)
+})
+
+```
+
 
 Populate
 
@@ -426,3 +563,21 @@ if (true)
 }
 ```
 
+### Path/route guide
+
+In many modern webapplications your backend 
+
+/:idUser/update
+
+
+
+workorderRef: [{
+	item: 
+	itemId:
+}]
+
+workorder: [{
+	workorderId: 
+	workorder: 
+	....
+}]
