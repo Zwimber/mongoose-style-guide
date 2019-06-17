@@ -391,7 +391,7 @@ With this splitting we use two reserved words; **on** and **set**. Other reserve
 ```js
 let notAllowed = ['on','get', 'set', 'init', 'emit', '_events', 'db', 'isNew', 'errors', 'schema', 'options', 'modelName', 'collection', '_pres', '_posts', 'toObject']
 let notAllowedWithAlternatives = {
-    'on': ['moment'],
+    'on': ['moment', 'at'],
     'emit': [],
     '_events': [],
     'db': [],
@@ -526,8 +526,39 @@ let SchemaUser = new Schema({
 })
 ```
 
-This way we can safely use the always present `transaction[0].itemId` without the risk of it being populated.
+This way we can safely use the always present `transactionRef[0].itemId` without the risk of it being populated.
 
+```js
+
+// 0 
+// - Makes clear that it is a reference
+user.transactionRef.forEach(ref => {
+	const transaction = ref.item
+	const transactionId = ref.itemId
+})
+
+// 1
+// - In shorthand loops it is clear 
+user.transactionRef.forEach(ref => {
+	const transaction = ref.transaction
+	const transactionId = ref.transactionId
+})
+user.transactionRef.map(ref => ref.transaction.price)
+
+// 2
+user.transactionRef.forEach(transactionRef => {
+	const transaction = transactionRef.item
+	const transactionId = transactionRef.itemId
+})
+
+// 3
+// user.transactionRef.forEach(item => {
+// 	const transaction = item.item
+// 	const transactionId = item.itemId
+// })
+
+
+```
 
 // Without population we have many more steps:
 
@@ -581,3 +612,110 @@ workorder: [{
 	workorder: 
 	....
 }]
+
+## API Response style
+
+The API should embrace a small set of statuscodes. It is cumbersome to check these and some might trigger behaviour of the client (often a browser). Therefore we've chosen to only use the following:
+
+**5XX ERROR** connection failures
+
+**404 NOT FOUND** failure, used for routes that do not exist
+
+**401 UNAUTHORIZED** not logged in
+
+**200 SUCCESS** for all other requests since the request completed succesfully
+
+In a functioning application, only the 200 & 500 statuscode is expected. All the other codes are a sign of a failing application. 
+
+### Reponse data
+
+Whenever a statuscode 200 is read this does not mean the request is succesful. We only know the real status after parsing it's content JSON. 
+
+The state of a response is specified by it's properties. The properties *data* and *warning* are used to confirm succesful actions. The properties *error* and *failure* convey problems after which you shouldn't continue. 
+
+The message added is only for the programmer. It is the clients responsibility to create a proper message. 
+
+### Situational examples
+
+**failures**
+ - Cannot connect to database
+ - Object 'user' does not exist
+ - Property X does not exist on Y
+ - This _id is not unique (when unexpected)
+
+**errors**
+ - Password is incorrect
+
+**warning**
+ - Request took 5 seconds
+
+**success**
+ - We found this user
+ - We found these events
+
+**cannot read property x of y** response with failure. This should never happen, application should break down.
+**incorrect password** error 
+
+### Response example
+
+```javascript
+const response = {
+
+    // Optional extra information for developer
+    message: String,
+    
+    // Success, continue
+    data: [] || {
+		// warning?
+	}, 
+
+    // Error, do not continue 
+    // (e.g. insufficient funds)
+    error: {
+
+		// Used to differentiate between errors
+		reason: 'insufficientFunds',
+		
+		name: '',			// DEV => Err.name
+		code: 400,			// DEV => 
+		stack: '',			// DEV => Err.stack
+	},
+
+    // Extra information about request
+    meta: {}
+}
+```
+
+
+GET `/event/:id/guest`
+POST `/event/`
+PATCH `/event/:id/guest/:guestId/arrived`
+REMOVE `/event/:id/guest`
+
+AUTH = post 
+
+transactionService() {
+
+}
+
+transactionService.get() 
+
+
+
+transaction = {
+	get: 
+	remove: 
+}
+
+transactionGet() {
+
+}
+transactionremove() {
+
+}
+
+
+
+## Where to do what?
+
+Where does which format get relevant?
