@@ -335,33 +335,6 @@ let user = {
 }
 ```
 
-**Exception 1 - Whenever there is great advantage in using the root property**
-
- --> sorting of object keys is not always preserved
- 
- --> history
- 
- --> linking both ways
-
-var mainSchema         = new Schema({
-
-    total: { 
-        type: Number, 
-        default: 0,
-    },
-    
-    livingRoom: {
-        total:                    { type: Number, default: 0, set: set },
-
-        twoPersonSofa:             { type: Number, default: 0, set: set },
-        threePersonSofa:         { type: Number, default: 0, set: set },
-        televisionLivingRoom:     { type: Number, default: 0, set: set },
-        smallFurniture:         { type: Number, default: 0, set: set },
-        sideTable:                 { type: Number, default: 0, set: set },
-        secretary:                 { type: Number, default: 0, set: set },
-        plants: 
-
-
 **Exception 2 - Reserved names**
 
 Often we like to store when, and by whom an property is edited:
@@ -409,7 +382,7 @@ let notAllowedWithAlternatives = {
     'toObject': [],
 }
 ```
-*Note: we suggest avoiding these words even as a part of your property names since later splitting will cause problems (the example with setOn and setBy could be improved by using putMoment and putBy)*
+*Note: we suggest avoiding these words even as a part of your property names since later splitting will cause problems (the example with setOn and setBy could be improved by using putAt and putBy)*
 
 Javascript JSON [asks](https://www.w3resource.com/slides/json-style-guide.php) you to refrain from using these at the root of your JSON Object: 
 ```js
@@ -526,7 +499,12 @@ let SchemaUser = new Schema({
 })
 ```
 
-This way we can safely use the always present `transactionRef[0].itemId` without the risk of it being populated.
+This way we can safely use the identifier without the risk of it being populated:
+
+- V0 -`transactionRef[0].itemId`
+- V1 -`transactionRef[0].transactionId`
+
+Please note that V1 might seem a little verbose but especially in situations like the following it is usefull:
 
 ```js
 
@@ -557,41 +535,6 @@ user.transactionRef.forEach(transactionRef => {
 // 	const transactionId = item.itemId
 // })
 
-
-```
-
-// Without population we have many more steps:
-
-let find = {}
-let query = Model.User.find(find)
-query.then(docs => {
-
-	let ids = docs.map(d => d._id)
-
-	let transactionFind = { _id: ids }
-	let transactionQuery = Model.User.find(transactionFind)
-})
-
-```
-
-
-Populate
-
-*Right:*
-
-```js
-if (true) {
-  console.log('winning');
-}
-```
-
-*Wrong:*
-
-```js
-if (true)
-{
-  console.log('losing');
-}
 ```
 
 ### Path/route guide
