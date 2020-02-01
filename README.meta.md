@@ -26,15 +26,15 @@ Obviously we are going for a `soft-delete` pattern. A hard delete will not leave
 
 ```
 const eventSchema = new Schema({
-	// ...
-	createdAt: Date,
-	createdBy: ObjectId,
+    // ...
+    createdAt: Date,
+    createdBy: ObjectId,
 
-	updatedAt: Date,
-	updatedBy: ObjectId,
+    updatedAt: Date,
+    updatedBy: ObjectId,
 
-	deletedAt: Date,
-	deletedBy: ObjectId,
+    deletedAt: Date,
+    deletedBy: ObjectId,
 })
 ```
 
@@ -46,17 +46,17 @@ const eventSchema = new Schema({
 
 ```
 const eventSchema = new Schema({
-	// ...
-	meta: {
-		createdAt: Date,
-		createdBy: ObjectId,
+    // ...
+    meta: {
+        createdAt: Date,
+        createdBy: ObjectId,
 
-		updatedAt: Date,
-		updatedBy: ObjectId,
+        updatedAt: Date,
+        updatedBy: ObjectId,
 
-		deletedAt: Date,
-		deletedBy: ObjectId,
-	}
+        deletedAt: Date,
+        deletedBy: ObjectId,
+    }
 })
 ```
 
@@ -69,19 +69,19 @@ const eventSchema = new Schema({
 
 ```
 const eventSchema = new Schema({
-	// ...
-	meta: {
-		created: { type: Boolean, default: true },
-		updated: { type: Boolean, default: true },
-		deleted: { type: Boolean, default: false },
-		history: [{
-			state: String,
-			put: {
-				at: Date,
-				by: ObjectId,
-			}
-		}]
-	}
+    // ...
+    meta: {
+        created: { type: Boolean, default: true },
+        updated: { type: Boolean, default: true },
+        deleted: { type: Boolean, default: false },
+        history: [{
+            state: String,
+            put: {
+                at: Date,
+                by: ObjectId,
+            }
+        }]
+    }
 })
 ```
 
