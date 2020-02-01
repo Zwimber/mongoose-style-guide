@@ -3,8 +3,10 @@
 To keep code dry it is usefull to think about what unites your models. We mention returning patterns shortly. 
 In this chapter we will discuss the creation of a `meta` pattern. A definition of `meta` in the technical sense:
 
-Technical metadata properties include file types, size, creation date and time, and type of compression. Technical metadata is often used for digital object management and interoperability.
-[https://www.lifewire.com/metadata-definition-and-examples-1019177]
+> Technical metadata properties include file types, size, creation date and time, and type of compression.
+> Technical metadata is often used for digital object management and interoperability.
+
+Source: [lifewire.com](https://www.lifewire.com/metadata-definition-and-examples-1019177)
 
 We aim to store the following fields in our meta object:
 
