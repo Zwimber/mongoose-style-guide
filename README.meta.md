@@ -8,10 +8,10 @@ Technical metadata properties include file types, size, creation date and time, 
 
 We aim to store the following fields in our meta object:
 
-a) Created
-b) Updated
-c) Deleted
-d) Restored
+1. Created
+2. Updated
+3. Deleted
+4. Restored
 
 Obviously we are going for a `soft-delete` pattern. A hard delete will not leave any record in the database. 
 
@@ -38,9 +38,10 @@ const eventSchema = new Schema({
 })
 ```
 
-(+) Implementation [exists](https://www.npmjs.com/package/mongoose-delete)
-(-) Hard to leave out or select meta, causes large selects
-(-) We cannot see a full history
+ - (+) Implementation - [exists](https://www.npmjs.com/package/mongoose-delete) therefore easy
+ - (-) Mongoose select - hard to leave out or select meta, causes large selects
+ - (-) Blame - we cannot see a full history
+ - (+) Size - very small and no risk of growing too large
 
 #### V1 - meta
 
@@ -60,10 +61,10 @@ const eventSchema = new Schema({
 })
 ```
 
- - (+) Easy to leave out meta by default, it is rarely relevant
- - (-) We cannot see a full history
- - (-) Implementation does not exist
-
+ - (-) Implementation - does not exist so has to be created by hand
+ - (+) Mongoose select - easy to leave out meta by default and select when needed
+ - (-) Blame - we cannot see a full history
+ - (+) Size - very small and no risk of growing too large
 
 #### V2 - meta + history
 
@@ -85,8 +86,8 @@ const eventSchema = new Schema({
 })
 ```
 
- - (+) Easy to leave out meta by default, it is rarely relevant 
- - (+) We can see a full history
- - (-) If a object is updated very often this array will grow very large . 
-
-
+ - (-) Implementation - does not exist so has to be created by hand
+ - (+) Mongoose select - easy to leave out meta by default and select when needed
+ - (+) Blame - we can see a full history
+ - (-) Size - can grow to be a large part of size
+ 
