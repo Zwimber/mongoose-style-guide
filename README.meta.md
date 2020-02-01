@@ -60,9 +60,9 @@ const eventSchema = new Schema({
 })
 ```
 
-(+) Easy to leave out meta by default, it is rarely relevant
-(-) We cannot see a full history
-(-) Implementation does not exist
+ - (+) Easy to leave out meta by default, it is rarely relevant
+ - (-) We cannot see a full history
+ - (-) Implementation does not exist
 
 
 #### V2 - meta + history
@@ -85,8 +85,8 @@ const eventSchema = new Schema({
 })
 ```
 
-(+) Easy to leave out meta by default, it is rarely relevant
-(+) We can see a full history
-(-) If a object is updated very often this array will grow very large
+ - (+) Easy to leave out meta by default, it is rarely relevant 
+ - (+) We can see a full history
+ - (-) If a object is updated very often this array will grow very large . 
 
 
