@@ -9,13 +9,13 @@ Database: [wl-rcn-production]
 ## Release environment
 
 Branch: release
-Domain: [https://release.studentverhuisservice.nl]
+Domain: [https://release.randomcompanyname.nl]
 Database: [wl-rcn-production]
 
 ## Develop environment
 
 Branch: develop
-Domain: [https://develop.studentverhuisservice.nl]
+Domain: [https://develop.randomcompanyname.nl]
 Database: [wl-rcn-develop]
 
 # Local environments
