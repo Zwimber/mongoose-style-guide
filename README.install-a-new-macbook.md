@@ -3,6 +3,7 @@
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install --cask iterm2
+xcode-select --install
 
 # iTerm2
 touch .hushlogin # No timestamp on startup
@@ -10,7 +11,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/mas
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 (echo 'ZSH_DISABLE_COMPFIX=true' && cat ~/.zshrc) > ~/.zshrc-tmp && mv ~/.zshrc-tmp ~/.zshrc
 echo 'ssh-add -q -K ~/.ssh/id_rsa' >> ~/.zshrc
-echo 'plugins=(zsh-autosuggestions)' >> ~/.zshrc
+sed -i '.bak' 's/(git)/(git zsh-autosuggestions)/g' ~/.zshrc
 
 # NodeJS
 curl -fsSL https://fnm.vercel.app/install | bash
@@ -29,6 +30,7 @@ echo 'replication:' >> /usr/local/etc/mongod.conf
 echo '  replSetName: rs01' >> /usr/local/etc/mongod.conf
 brew services start mongodb/brew/mongodb-community
 mongo
+db.disableFreeMonitoring()
 rs.initiate()
 
 # Git
