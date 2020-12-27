@@ -80,6 +80,7 @@ brew install --cask vlc
 brew install --cask whatsapp
 brew install --cask telegram
 brew install --cask caffeine
+brew install --cask basecamp
 ```
 
 # Settings
@@ -88,3 +89,4 @@ brew install --cask caffeine
 - Spotlight don’t look for files or web
 - Keyboard use as F1 keys
 - Finder / Advanced / Keep folders on top
+- Auto-hide top bar
