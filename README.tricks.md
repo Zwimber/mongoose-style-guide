@@ -1,6 +1,13 @@
 ### Quicly clean all your files with prettier
 
-`npm install prettier & npx prettier --write ./\*.js`
+```
+#
+npm install prettier
+npx prettier --write ./server/**/*.js
+npx prettier --write ./src/app/**/*.ts
+npx prettier --write ./src/app/**/*.html
+npx prettier --write ./src/app/**/*.scss
+```
 
 # MongoDB
 

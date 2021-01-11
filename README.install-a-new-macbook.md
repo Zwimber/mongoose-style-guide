@@ -71,16 +71,17 @@ doctl auth init
 # Brew applications must haves
 
 ```bash
+brew install --cask google-chrome # If Cypress user, install Chrome Dev (different icon)
 brew install --cask spotify
 brew install --cask private-internet-access
 brew install --cask brave-browser
-brew install --cask google-chrome
 brew install --cask qbittorrent
 brew install --cask vlc
 brew install --cask whatsapp
 brew install --cask telegram
 brew install --cask caffeine
 brew install --cask basecamp
+brew install nmap
 ```
 
 # Settings
