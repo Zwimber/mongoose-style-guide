@@ -63,8 +63,10 @@ doctl auth init
   "files.exclude": {
     "node_modules/": true,
     "dist/": true,
+    "dist-new/": true,
     "e2e/": true
-  }
+  },
+  "explorer.confirmDragAndDrop": false
 }
 ```
 
