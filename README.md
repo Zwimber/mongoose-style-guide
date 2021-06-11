@@ -29,7 +29,7 @@ according to your preferences.
 
 ### Mongoose population
 
-- [Populateable guide](#populate-guide)
+- [Populateable guide](#Populateable guide)
 
 ### Mongoose stable patterns
 
