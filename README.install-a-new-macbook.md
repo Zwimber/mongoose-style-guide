@@ -5,13 +5,17 @@
 brew install --cask iterm2
 xcode-select --install
 
-# iTerm2
+# Setting up terminal
 touch .hushlogin # No timestamp on startup
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" # Oh my ZSH!
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 (echo 'ZSH_DISABLE_COMPFIX=true' && cat ~/.zshrc) > ~/.zshrc-tmp && mv ~/.zshrc-tmp ~/.zshrc
 echo 'ssh-add -q -K ~/.ssh/id_rsa' >> ~/.zshrc
 sed -i '.bak' 's/(git)/(git zsh-autosuggestions)/g' ~/.zshrc
+
+brew install fish
+fish
+set -U fish_greeting "".
 
 # NodeJS
 curl -fsSL https://fnm.vercel.app/install | bash
