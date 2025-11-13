@@ -26,15 +26,15 @@ brew install --cask visual-studio-code
 # (2020-12-12 - Rosetta 2)
 brew install --cask robo-3t
 brew tap mongodb/brew
-brew install mongodb-community
+brew services start mongodb/brew/mongodb-community@7.0
 echo '# Replication' >> /opt/homebrew/etc/mongod.conf
 echo 'replication:' >> /opt/homebrew/etc/mongod.conf
 echo '  replSetName: rs01' >> /opt/homebrew/etc/mongod.conf
-brew services stop mongodb/brew/mongodb-community
-brew services start mongodb/brew/mongodb-community
+brew services stop mongodb/brew/mongodb-community@7.0
+brew services start mongodb/brew/mongodb-community@7.0
 mongosh
 rs.initiate()
-db.disableFreeMonitoring()
+disableTelemetry()
 
 # Git
 # (2020-12-12 - Rosetta 2)
